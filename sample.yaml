@@ -1,0 +1,33 @@
+esphome:
+  on_boot:
+    then:
+        - lambda: |-
+            id(string_to_display).publish_state("00"); 
+
+api:
+  services:
+    - service: string_publish
+      variables:
+        string_from_ha: string
+      then:
+        - lambda: |-
+            id(string_to_display).publish_state(string_from_ha);
+
+text_sensor:
+  - platform: template
+    id: string_to_display
+    name: String to Display
+
+display:
+  platform: seven_segment_component
+  id: segmentme
+  write_pin: GPIO14
+  clk_pin: GPIO5
+  data_pin: GPIO4
+  update_interval: 2000ms
+  lambda: |-
+    std::string val = id(string_to_display).state;
+    if (val.length() > 1) 
+      it.print(val.c_str());
+    else
+      it.print(("0" + val).c_str());
