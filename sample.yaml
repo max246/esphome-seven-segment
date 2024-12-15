@@ -3,6 +3,12 @@ esphome:
     then:
         - lambda: |-
             id(string_to_display).publish_state("00"); 
+            
+external_components:
+  - source:
+      type: local
+      path: my_components
+    components: all
 
 api:
   services:
